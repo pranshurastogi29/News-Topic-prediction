@@ -72,7 +72,7 @@ with open('tokenizer.obj' , 'rb') as f:
   tokenizer = pickle.load(f)
     
 summarization_pipe = load_summarization_model()
-model , tokenizer = Topic_generation_load('tiny-bert' ,'model.bin', 'tokenizer.obj')
+model = Topic_generation_load('tiny-bert' ,'model.bin')
 
 st.title('News Summary Generation and Topic Prediction')
 
