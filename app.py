@@ -30,19 +30,11 @@ def load_topic_model(base_path, model_path):
   net.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
   return net
 
+@st.cache(allow_output_mutation=True,suppress_st_warning=True)
 def Topic_generation_load(base_path, model_path):
     print('loading topic_model')
     model = load_topic_model(base_path, model_path)
     return model
-
-def load_summarization_model():
-    print('loading summarization model')
-    summarization_pipe = pipeline('summarization', model = 'sshleifer/distilbart-xsum-6-6')
-    print('sentiment model loading')
-    return summarization_pipe
-
-def get_summarization(text, summarization, max_lenght):
-  return summarization(text, max_length=max_lenght)[0]['summary_text']
 
 
 def predict_topic(text, tokenizer):
@@ -70,20 +62,10 @@ with open('tokenizer.obj' , 'rb') as f:
     tokenizer = pickle.load(f)
 
 model = Topic_generation_load('tiny-bert' ,'model.bin')
-summarization_pipe = load_summarization_model()
 
-st.title('News Summary Generation and Topic Prediction')
-
-st.markdown('Here you can enter the News in first text box and can get news summary around the subject')
+st.title('News Topic Prediction')
 
 text = st.text_input('Enter News here:',key=0)
-
-if st.checkbox('Start Generate Summary'):
-    st.write('uncheck the box if you are done')
-    option = st.sidebar.selectbox(label='Max_Lenght',options=['20','40','50'])
-    summary = get_summarization(text, summarization_pipe, int(option))
-    st.write('Final summary ' + summary)
-else: pass
 
 st.markdown('Once done you can get the top Topics the news relate too')
 
