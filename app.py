@@ -65,7 +65,8 @@ model = Topic_generation_load('tiny-bert' ,'model.bin')
 
 st.title('News Topic Prediction')
 
-text = st.text_input('Enter News here:',key=0)
+if st.checkbox('Start Generate Summary'):
+    text = st.text_input('Enter News here:',key=0)
 
 st.markdown('Once done you can get the top Topics the news relate too')
 
