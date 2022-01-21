@@ -30,7 +30,7 @@ def load_topic_model(base_path, model_path):
   net.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
   return net
 
-@st.cache(allow_output_mutation=True,suppress_st_warning=True)
+@st.cache(suppress_st_warning=True)
 def Topic_generation_load(base_path, model_path, tokenizer_path):
     print('loading topic_model')
     with open(tokenizer_path , 'rb') as f: 
@@ -38,10 +38,10 @@ def Topic_generation_load(base_path, model_path, tokenizer_path):
     model = load_topic_model(base_path, model_path)
     return model , tokenizer
 
-@st.cache(allow_output_mutation=True,suppress_st_warning=True)
+@st.cache(suppress_st_warning=True)
 def load_summarization_model():
     print('loading summarization model')
-    summarization_pipe = pipeline('summarization', model = 'sshleifer/distilbart-cnn-6-6')
+    summarization_pipe = pipeline('summarization', model = 'sshleifer/distilbart-xsum-6-6')
     print('sentiment model loading')
     return summarization_pipe
 
@@ -70,8 +70,8 @@ def predict_topic(text, tokenizer):
     l.append(top_dic[str(i)])
   return l
 
-summarization_pipe = load_summarization_model()
 model , tokenizer = Topic_generation_load('tiny-bert' ,'model.bin', 'tokenizer.obj')
+summarization_pipe = load_summarization_model()
 
 st.title('News Summary Generation and Topic Prediction')
 
