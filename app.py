@@ -41,7 +41,7 @@ def Topic_generation_load(base_path, model_path, tokenizer_path):
 @st.cache(allow_output_mutation=True,suppress_st_warning=True)
 def load_summarization_model():
     print('loading summarization model')
-    summarization_pipe = pipeline('summarization')
+    summarization_pipe = pipeline('summarization', model = 'sshleifer/distilbart-cnn-6-6')
     print('sentiment model loading')
     return summarization_pipe
 
