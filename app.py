@@ -30,7 +30,7 @@ def load_topic_model(base_path, model_path):
   net.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
   return net
 
-@st.cache(allow_output_mutation=True, suppress_st_warning=True)
+@st.cache(suppress_st_warning=True)
 def Topic_generation_load(base_path, model_path):
     print('loading topic_model')
     model = load_topic_model(base_path, model_path)
