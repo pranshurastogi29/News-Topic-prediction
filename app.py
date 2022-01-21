@@ -37,7 +37,7 @@ def Topic_generation_load(base_path, model_path):
     return model
 
 
-def predict_topic(text, tokenizer):
+def predict_topic(text, tokenizer, model):
   encoded = tokenizer.encode_plus(
             text, 
             add_special_tokens=True, 
@@ -70,6 +70,6 @@ text = st.text_input('Enter News here:',key=0)
 st.markdown('Once done you can get the top Topics the news relate too')
 
 if st.button('Predict Topics'):
-  l = predict_topic(text, tokenizer)
+  l = predict_topic(text, tokenizer, model)
   st.markdown('Top topics related are '+' , '.join(l))
 else: pass
