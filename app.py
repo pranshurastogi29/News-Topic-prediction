@@ -31,12 +31,10 @@ def load_topic_model(base_path, model_path):
   return net
 
 @st.cache(allow_output_mutation=True, suppress_st_warning=True)
-def Topic_generation_load(base_path, model_path, tokenizer_path):
+def Topic_generation_load(base_path, model_path):
     print('loading topic_model')
-    with open(tokenizer_path , 'rb') as f: 
-      tokenizer = pickle.load(f)
     model = load_topic_model(base_path, model_path)
-    return model , tokenizer
+    return model
 
 @st.cache(suppress_st_warning=True)
 def load_summarization_model():
@@ -70,7 +68,10 @@ def predict_topic(text, tokenizer):
     l.append(top_dic[str(i)])
   return l
 
-model , tokenizer = Topic_generation_load('tiny-bert' ,'model.bin', 'tokenizer.obj')
+with open('tokenizer.obj' , 'rb') as f: 
+    tokenizer = pickle.load(f)
+
+model = Topic_generation_load('tiny-bert' ,'model.bin')
 summarization_pipe = load_summarization_model()
 
 st.title('News Summary Generation and Topic Prediction')
