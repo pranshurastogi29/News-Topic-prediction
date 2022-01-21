@@ -68,7 +68,7 @@ def predict_topic(text, tokenizer):
     l.append(top_dic[str(i)])
   return l
 
-with open(tokenizer_path , 'rb') as f: 
+with open('tokenizer.obj' , 'rb') as f: 
   tokenizer = pickle.load(f)
     
 summarization_pipe = load_summarization_model()
