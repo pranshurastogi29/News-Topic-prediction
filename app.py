@@ -1,3 +1,4 @@
+%%writefile app.py
 import streamlit as st
 from transformers import pipeline
 import time
@@ -7,13 +8,13 @@ import joblib
 from transformers import AutoModel, AutoTokenizer, AutoConfig
 import torch
 import torch.nn as nn
+import pickle 
 
-BACKBONE_PATH = "distilroberta-base"
 class ToxicSimpleNNModel(nn.Module):
 
-    def __init__(self):
+    def __init__(self, path):
         super(ToxicSimpleNNModel, self).__init__()
-        self.backbone = AutoModel.from_pretrained(BACKBONE_PATH)
+        self.backbone = AutoModel.from_pretrained(path)
         self.dropout = nn.Dropout(0.3)
         self.linear = nn.Linear(in_features=self.backbone.pooler.dense.out_features*2,out_features=8)
         
@@ -25,17 +26,17 @@ class ToxicSimpleNNModel(nn.Module):
         x = self.dropout(x)
         return self.linear(x)
 
-def load_topic_model(path):
-  net = ToxicSimpleNNModel()
-  net.load_state_dict(torch.load(path, map_location=torch.device('cpu')))
+def load_topic_model(base_path, model_path):
+  net = ToxicSimpleNNModel(base_path)
+  net.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
   return net
 
 @st.cache(allow_output_mutation=True,suppress_st_warning=True)
-def Topic_generation_load():
+def Topic_generation_load(base_path, model_path, tokenizer_path):
     print('loading topic_model')
-    model = load_topic_model('/content/roberta_train/last-checkpoint.bin')
-    tokenizer = AutoTokenizer.from_pretrained("distilroberta-base")
-    print('topic_model loaded')
+    with open(tokenizer_path , 'rb') as f: 
+      tokenizer = pickle.load(f)
+    model = load_topic_model(base_path, model_path)
     return model , tokenizer
 
 @st.cache(allow_output_mutation=True,suppress_st_warning=True)
@@ -71,7 +72,7 @@ def predict_topic(text, tokenizer):
   return l
 
 summarization_pipe = load_summarization_model()
-model , tokenizer = Topic_generation_load()
+model , tokenizer = Topic_generation_load('tiny-bert' ,'model.bin', 'tokenizer.obj')
 
 st.title('News Summary Generation and Topic Prediction')
 
