@@ -25,15 +25,15 @@ class ToxicSimpleNNModel(nn.Module):
         x = self.dropout(x)
         return self.linear(x)
 
-def load_topic_model(path=None):
+def load_topic_model(path):
   net = ToxicSimpleNNModel()
-  #net.load_state_dict(torch.load(path, map_location=torch.device('cpu')))
+  net.load_state_dict(torch.load(path, map_location=torch.device('cpu')))
   return net
 
 @st.cache(allow_output_mutation=True,suppress_st_warning=True)
 def Topic_generation_load():
     print('loading topic_model')
-    model = load_topic_model()
+    model = load_topic_model('/content/roberta_train/last-checkpoint.bin')
     tokenizer = AutoTokenizer.from_pretrained("distilroberta-base")
     print('topic_model loaded')
     return model , tokenizer
