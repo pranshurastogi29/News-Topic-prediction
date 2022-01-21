@@ -4,37 +4,14 @@ import time
 import pandas as pd
 import numpy as np
 import joblib
-from transformers import AutoModel, AutoTokenizer, AutoConfig
 import torch
 import torch.nn as nn
-
-BACKBONE_PATH = "distilroberta-base"
-class ToxicSimpleNNModel(nn.Module):
-
-    def __init__(self):
-        super(ToxicSimpleNNModel, self).__init__()
-        self.backbone = AutoModel.from_pretrained(BACKBONE_PATH)
-        self.dropout = nn.Dropout(0.3)
-        self.linear = nn.Linear(in_features=self.backbone.pooler.dense.out_features*2,out_features=8)
-        
-    def forward(self, input_ids, attention_masks):
-        seq_x, _= self.backbone(input_ids=input_ids, attention_mask=attention_masks, return_dict=False)
-        apool = torch.mean(seq_x, 1)
-        mpool, _ = torch.max(seq_x, 1)
-        x = torch.cat((apool, mpool), 1)
-        x = self.dropout(x)
-        return self.linear(x)
-
-def load_topic_model(path):
-  net = ToxicSimpleNNModel()
-  net.load_state_dict(torch.load(path, map_location=torch.device('cpu')))
-  return net
 
 @st.cache(allow_output_mutation=True,suppress_st_warning=True)
 def Topic_generation_load():
     print('loading topic_model')
-    model = load_topic_model('/content/roberta_train/last-checkpoint.bin')
-    tokenizer = AutoTokenizer.from_pretrained("distilroberta-base")
+    model = pickle.load('model.obj')
+    tokenizer = pickle.load('tokenizer.obj')
     print('topic_model loaded')
     return model , tokenizer
 
