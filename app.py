@@ -36,7 +36,6 @@ def Topic_generation_load(base_path, model_path):
     model = load_topic_model(base_path, model_path)
     return model
 
-@st.cache(suppress_st_warning=True)
 def load_summarization_model():
     print('loading summarization model')
     summarization_pipe = pipeline('summarization', model = 'sshleifer/distilbart-xsum-6-6')
